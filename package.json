@@ -1,0 +1,43 @@
+{
+  "name": "digisign-oracle",
+  "productName": "DigiSign Oracle",
+  "version": "0.1.0",
+  "description": "DigiSign Oracle verifies PGP digital signatures of files and manifests.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist-all": "electron-builder -mw"
+  },
+  "keywords": [
+    "digital signature",
+    "signature",
+    "pgp",
+    "openpgp",
+    "gnupg"
+  ],
+  "author": "Marcelo Martins (exploitedbunker.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^5.0.3",
+    "electron-builder": "^20.4.2"
+  },
+  "copyright": "Copyright © 2019 ${author}",
+  "build": {
+    "appId": "com.exploitedbunker.digisign",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg",
+      "icon": "assets/icons/mac/eye.svg.icns"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "assets/icons/win/eye.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/png"
+    }
+  }
+}

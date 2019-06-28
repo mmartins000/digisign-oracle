@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>DigiSign Oracle - Digital signature verifier</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://use.fontawesome.com; img-src 'self'; style-src 'self' https://use.fontawesome.com https://fonts.googleapis.com;">
+    <!-- Had to remove connect-src from CSP otherwise we could not connect to HKP servers -->
+    <!-- Local sources, no need for internet connection if you have these files -->
+    <link rel="stylesheet" href="assets/css/floating-labels.css">
+    <link rel="stylesheet" href="assets/css/digisign.css">
+    <link rel="stylesheet" href="assets/css/default/bootstrap.css" title="main">
+    <script type="text/javascript" src="assets/js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/openpgp.js"></script>
+    <script type="text/javascript" src="assets/js/digisign-oracle.js"></script>
+    <!-- Remote source, Font Awesome required only for the two icons on the right of the page -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <!-- <link rel="manifest" href="favicon/site.webmanifest"> -->
+    <link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <!-- End of Favicon -->
+</head>
+<body>
+<a href="https://github.com/mmartins000/digisign-oracle/" target="_blank" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true" class="github-corner-svg">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+
+<form class="form-signin">
+    <!-- Logo and name -->
+    <div class="text-center mb-4 font-weight-normal">
+        <a id="imgLogo" href="#" class="text-dark">
+            <!-- https://www.flaticon.com/free-icon/eye_64878 -->
+            <img class="mb-4" src="assets/images/eye.svg" alt="" width="72" height="72" title="Icon made by Freepik from Flaticon, licensed by Creative Commons BY 3.0">
+        </a>
+        <h1 class="h3 mb-3 font-weight-normal">DigiSign Oracle</h1>
+    </div>
+    <br>
+
+    <!-- First nav row -->
+    <ul class="nav nav-pills mb-3 justify-content-center" id="manifest-choice-tab" role="tablist">
+        <!-- With Manifest Nav -->
+        <li class="nav-item">
+            <a class="nav-link active" id="manifest-tab" data-toggle="pill" href="#manifest" role="tab" aria-controls="manifest" aria-selected="true">With manifest</a>
+        </li>
+        <!-- Without Manifest Nav -->
+        <li class="nav-item">
+            <a class="nav-link" id="no-manifest-tab" data-toggle="pill" href="#no-manifest" role="tab" aria-controls="no-manifest" aria-selected="false">Without manifest</a>
+        </li>
+    </ul>
+
+    <!-- Second nav row -->
+    <ul class="nav nav-pills mb-3 justify-content-center" id="key-choice-tab" role="tablist">
+        <!-- Key from server Nav -->
+        <li class="nav-item">
+            <a class="nav-link active" id="keyserver-tab" data-toggle="pill" href="#keyServer" role="tab" aria-controls="keyserver" aria-selected="true">Key from server</a>
+        </li>
+        <!-- Key from file Nav -->
+        <li class="nav-item">
+            <a class="nav-link" id="keyfile-tab" data-toggle="pill" href="#keyFile" role="tab" aria-controls="keyfile" aria-selected="false">Key from file</a>
+        </li>
+    </ul>
+
+    <!-- First tab: Key Tab -->
+    <div class="tab-content" id="key-tabContent">
+        <!-- Key Tab 1 -->
+        <div class="tab-pane fade show active" id="keyServer" role="tabpanel" aria-labelledby="keyServer-tab">
+            <div class="form-label-group">
+                <input type="text" id="hkpServer" class="form-control" placeholder="Server" autofocus="">
+                <label for="hkpServer">PGP Server (HKP)</label>
+            </div>
+            <div class="form-label-group">
+                <input type="text" id="hkpKey" class="form-control" placeholder="Key">
+                <label for="hkpKey">Key ID (0x format) or E-mail address</label>
+            </div>
+        </div>
+        <!-- Key Tab 2 -->
+        <div class="tab-pane fade" id="keyFile" role="tabpanel" aria-labelledby="keyFile-tab">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="publicKeyFile">
+                <label class="custom-file-label" for="publicKeyFile">Public key file</label>
+            </div>
+            <br><br>
+        </div>
+    </div>
+
+    <!-- Second tab: Manifest Tab -->
+    <div class="tab-content" id="pills-tabContent">
+        <!-- Manifest Tab 1 -->
+        <div class="tab-pane fade show active" id="manifest" role="tabpanel" aria-labelledby="manifest-tab">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="manifestFile">
+                <label class="custom-file-label" for="manifestFile">Manifest file</label>
+            </div>
+            <br><br>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="manifestSignatureFile">
+                <label class="custom-file-label" for="manifestSignatureFile">Manifest signature file</label>
+            </div>
+            <br><br>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="packageFile1">
+                <label class="custom-file-label" for="packageFile1">Package to be verified</label>
+            </div>
+            <br><br>
+            <button id="verify1" class="btn btn-lg btn-secondary btn-block flex-row" type="button">
+                Verify
+            </button>
+        </div>
+        <!-- Manifest Tab 2 -->
+        <div class="tab-pane fade" id="no-manifest" role="tabpanel" aria-labelledby="no-manifest-tab">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="signatureFile">
+                <label class="custom-file-label" for="signatureFile">Signature file</label>
+            </div>
+            <br><br>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="packageFile2">
+                <label class="custom-file-label" for="packageFile2">Package to be verified</label>
+            </div>
+            <br><br>
+            <button id="verify2" class="btn btn-lg btn-secondary btn-block flex-row" type="button">
+                Verify
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Notifications -->
+<div id="noti" aria-live="polite" aria-atomic="true" class="right noti-box" >
+    <div id="top" class="noti-box-top">
+        <div class="text-right mb-4 text-dark">
+            <a id="infoCircle" href="#" class="text-dark">
+                <i class="fas fa-info-circle"></i>
+            </a>
+        </div>
+    </div>
+    <div id="inside" class="inside-box">
+    </div>
+    <div id="bottom" class="noti-box-bottom">
+        <div class="text-right mb-4 text-dark">
+            <a id="closeCircle" href="#" class="text-dark">
+                <i class="fas fa-times-circle"></i>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

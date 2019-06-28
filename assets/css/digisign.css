@@ -1,0 +1,90 @@
+/* Reset the following properties, inserted by css/floating-labels.css */
+#body {
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: unset;
+}
+/*.form-signin {*/
+/*    padding-left: 65px;*/
+/*    margin-left: unset;*/
+/*}*/
+
+/* Usual style formatting */
+.alert {
+    /* To break the text in the alerts into shorter lines */
+    word-wrap: break-word;
+}
+
+.form-signin {
+    max-width: 420px;
+}
+
+.inverted {
+    -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+    filter: invert(100%);
+}
+
+/* Copied from inline style */
+.inside-box {
+    position: absolute;
+    top: 25px;
+    bottom: 45px;
+    right: 15px;
+    /*width: 350px;*/
+    overflow-y: scroll;
+    width: 320px;
+}
+
+.noti-box {
+    position: relative;
+    top: 5vh;
+    min-height: 85vh;
+}
+.noti-box-top {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+.noti-box-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+}
+
+/* Github triangle */
+.github-corner-svg {
+    fill: #151513;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    border: 0;
+    right: 0;
+}
+
+.octo-arm {
+    transform-origin: 130px 106px;
+}
+
+/* Github anim */
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+}
+@keyframes octocat-wave {
+    0%, 100% {
+        transform: rotate(0)
+    }
+    20%, 60% {
+        transform: rotate(-25deg)
+    }
+    40%, 80% {
+        transform: rotate(10deg)
+    }
+}
+@media (max-width: 500px) {
+    .github-corner:hover .octo-arm {
+        animation: none
+    }
+    .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out
+    }
+}
