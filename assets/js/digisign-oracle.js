@@ -79,6 +79,7 @@ $(document).ready(function() {
 
     let manifestFile, manifestSignatureFile, signatureFile, publicKeyInputFile, packageFile1, packageFile2;
     let manifestAlgo, manifestDigestSize;
+    let manifestFilename, manifestSignatureFilename;
 
     function prepareRead(object) {
         if (document.getElementById(object).files[0]) {
@@ -339,7 +340,11 @@ $(document).ready(function() {
                     }
                     catch (e) {
                         console.log(e);
-                        showAlert(e, "alert-warning", "Warning!");
+                        let str = e.message;
+                        if (str.includes("fetch")) {
+                            e = e + ". It may be related to Access-Control-Allow-Origin' header not present on the requested resource: " + hkpServer + ". Try DigiSign Oracle locally on your computer or select \"Key from file\"";
+                        }
+                        showAlert(e, "alert-danger", "Fail!");
                         enableVerify();
                         return
                     }
@@ -501,7 +506,7 @@ $(document).ready(function() {
     }
 
     function checkFileType(fileContent, expectedType) {
-        // Try to alert the user in case the work file was selected.
+        // Try to alert the user in case the wrong file was selected.
         // Only possible in case of PGP armored files.
         if (expectedType === "signature") {
             if (fileContent.startsWith('-----BEGIN PGP SIGNATURE-----') &&
@@ -519,6 +524,14 @@ $(document).ready(function() {
             if (myRegex)
                 return true
         }
+        return false
+    }
+
+    function checkFilenamesMatch(manifest, signature) {
+        // Try to alert the user in case the filenames don't match.
+        signatureWithoutExtension = signature.replace(/\.[^/.]+$/, "")
+        if (manifest === signatureWithoutExtension)
+            return true
         return false
     }
 
@@ -584,6 +597,18 @@ $(document).ready(function() {
                                     console.log('Loaded ' + file.name + ' as manifest file (?)');
                                     showAlert(txtLoaded, "alert-warning", "Loaded manifest file (?)");
                                 }
+                                manifestFilename = file.name;
+                                if (manifestFilename && manifestSignatureFilename)
+                                    if (! checkFilenamesMatch(manifestFilename, manifestSignatureFilename)) {
+                                        console.log('Manifest and signature mismatch (?)');
+                                        txtLoaded =
+                                            '<b>Manifest: </b>' +
+                                            manifestFilename +
+                                            '<br>' +
+                                            '<b>Signature: </b>' +
+                                            manifestSignatureFilename;
+                                        showAlert(txtLoaded, "alert-warning", "Manifest and signature mismatch (?)");
+                                    }
                                 break;
                             case 'manifestSignatureFile':
                                 manifestSignatureFile = decoded;
@@ -605,6 +630,18 @@ $(document).ready(function() {
                                     console.log('Loaded ' + file.name + ' as signature file (?)');
                                     showAlert(txtLoaded, "alert-warning", "Loaded signature file (?)");
                                 }
+                                manifestSignatureFilename = file.name;
+                                if (manifestFilename && manifestSignatureFilename)
+                                    if (! checkFilenamesMatch(manifestFilename, manifestSignatureFilename)) {
+                                        console.log('Manifest and signature mismatch (?)');
+                                        txtLoaded =
+                                            '<b>Manifest: </b>' +
+                                            manifestFilename +
+                                            '<br>' +
+                                            '<b>Signature: </b>' +
+                                            manifestSignatureFilename;
+                                        showAlert(txtLoaded, "alert-warning", "Manifest and signature mismatch (?)");
+                                    }
                                 break;
                             case 'publicKeyFile':
                                 publicKeyInputFile = decoded;
@@ -724,7 +761,7 @@ $(document).ready(function() {
     }
 
     function printBanner() {
-        let version = 0.1;
+        let version = 0.2;
         console.log("DigiSign Oracle v" + version);
     }
 

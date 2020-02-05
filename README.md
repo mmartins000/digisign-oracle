@@ -10,9 +10,9 @@ If you would like to learn more about digital signatures, read the article [Veri
 
 ### Why?
 
-Initial use case: to provide [Decred Project](https://decred.org) users with a graphical interface option to verify the digital signature of Decred packages downloaded from Github. You can watch this code running on [Stakey Club](https://stakey.club) at https://stakey.club.
+Initial use case: to provide [Decred Project](https://decred.org) users with a graphical interface option to verify the digital signature of Decred packages downloaded from Github. You can watch this code running on [Stakey Club](https://stakey.club/digisign-oracle) at https://stakey.club/digisign-oracle.
 
-DigiSign Oracle can verify any package/message signed with PGP.
+DigiSign Oracle can verify any package signed with PGP.
 
 ## Release notes
 
@@ -51,3 +51,13 @@ You can generate manifest text files and sign them using the script provided in 
 Just run tester.sh to generate all manifests and sign them all using a test PGP key pair generated for this purpose.
 
 When you're done, run cleaner.sh to remove the files tester.sh created.  
+
+## Troubleshooting
+
+If you encounter an error:
+
+> TypeError: Failed to fetch. It may be related to 'Access-Control-Allow-Origin' header not present on the requested resource: https://keyserver.ubuntu.com. Try DigiSign Oracle locally on your computer or select "Key from file"
+
+It is probably related to CORS. CORS is a security mechanism in HTTP headers to prevent the browser from using data from a different origin. It is expected to happen if you're running DigiSign Oracle from Github Pages, for example, because it lacks the header 'Access-Control-Allow-Origin'.
+
+Please check [https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) to learn more about it.
