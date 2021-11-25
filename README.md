@@ -58,6 +58,17 @@ If you encounter an error:
 
 > TypeError: Failed to fetch. It may be related to 'Access-Control-Allow-Origin' header not present on the requested resource: https://keyserver.ubuntu.com. Try DigiSign Oracle locally on your computer or select "Key from file"
 
-It is probably related to CORS. CORS is a security mechanism in HTTP headers to prevent the browser from using data from a different origin. It is expected to happen if you're running DigiSign Oracle from Github Pages, for example, because it lacks the header 'Access-Control-Allow-Origin'.
+It is probably related to CORS. CORS is a security mechanism in HTTP headers to prevent the browser from using data from a different origin. It is expected to happen if you're running DigiSign Oracle from GitHub Pages, for example, because it lacks the header 'Access-Control-Allow-Origin'.
 
 Please check [https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) to learn more about it.
+
+### Screenshots
+
+#### Ready to run
+![Ready to run](screenshots/screenshot0.png)
+
+#### Ready to run (dark mode)
+![Ready to run (dark mode)](screenshots/screenshot1.png)
+
+#### Successful validation of a digital signature
+![Successful validation of a digital signature](screenshots/screenshot2.png)
