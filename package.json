@@ -20,7 +20,7 @@
   "author": "Marcelo Martins (exploitedbunker.com)",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^11.5.0",
+    "electron": "^18.3.7",
     "electron-builder": "^20.4.2"
   },
   "copyright": "Copyright © 2019 ${author}",
